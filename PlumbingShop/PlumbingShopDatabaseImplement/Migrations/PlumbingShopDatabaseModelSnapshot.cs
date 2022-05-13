@@ -59,6 +59,28 @@ namespace PlumbingShopDatabaseImplement.Migrations
                     b.ToTable("Components");
                 });
 
+            modelBuilder.Entity("PlumbingShopDatabaseImplement.Models.Implementer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ImplementerFIO")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PauseTime")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkingTime")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Implementers");
+                });
+
             modelBuilder.Entity("PlumbingShopDatabaseImplement.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -78,6 +100,9 @@ namespace PlumbingShopDatabaseImplement.Migrations
                     b.Property<DateTime?>("DateImplement")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("ImplementerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SanitaryEngineeringId")
                         .HasColumnType("int");
 
@@ -90,6 +115,8 @@ namespace PlumbingShopDatabaseImplement.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("ImplementerId");
 
                     b.HasIndex("SanitaryEngineeringId");
 
@@ -148,6 +175,10 @@ namespace PlumbingShopDatabaseImplement.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PlumbingShopDatabaseImplement.Models.Implementer", "Implementer")
+                        .WithMany("Orders")
+                        .HasForeignKey("ImplementerId");
+
                     b.HasOne("PlumbingShopDatabaseImplement.Models.SanitaryEngineering", "SanitaryEngineering")
                         .WithMany("Orders")
                         .HasForeignKey("SanitaryEngineeringId")
@@ -155,6 +186,8 @@ namespace PlumbingShopDatabaseImplement.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+
+                    b.Navigation("Implementer");
 
                     b.Navigation("SanitaryEngineering");
                 });
@@ -186,6 +219,11 @@ namespace PlumbingShopDatabaseImplement.Migrations
             modelBuilder.Entity("PlumbingShopDatabaseImplement.Models.Component", b =>
                 {
                     b.Navigation("SanitaryEngineeringComponents");
+                });
+
+            modelBuilder.Entity("PlumbingShopDatabaseImplement.Models.Implementer", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("PlumbingShopDatabaseImplement.Models.SanitaryEngineering", b =>
